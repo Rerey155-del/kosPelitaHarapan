@@ -1,12 +1,15 @@
 <?php
 include __DIR__ . '/../../koneksi/db.php';
 
-if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+$segments = explode('/', $_GET['url'] ?? '');
+$id = $segments[1] ?? null;
+
+if (!is_numeric($id)) {
     echo "ID kamar tidak valid.";
     exit;
 }
 
-$id = intval($_GET['id']);
+$id = intval($id);
 $sql = "SELECT * FROM rooms WHERE id = $id";
 $result = $conn->query($sql);
 
@@ -17,6 +20,7 @@ if ($result->num_rows == 0) {
 
 $room = $result->fetch_assoc();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -33,7 +37,7 @@ $room = $result->fetch_assoc();
     <div data-aos="fade-down">
         <div class="max-w-4xl mx-auto bg-white rounded-lg shadow p-6">
             <!-- Gambar utama -->
-            <img src="../../uploads/<?= htmlspecialchars($room['gambar']) ?>" alt="Gambar Kamar" class="w-full h-72 object-cover rounded-lg mb-4">
+            <img src="/KosPelitaHarapan/uploads/<?= htmlspecialchars($room['gambar']) ?>" alt="Gambar Kamar" class="w-full h-72 object-cover rounded-lg mb-4">
 
             <!-- Header: Nama, Rating, Lokasi -->
             <div class="flex justify-between">
@@ -42,9 +46,8 @@ $room = $result->fetch_assoc();
                         <h1 class="text-2xl font-bold mb-2"><?= htmlspecialchars($room['name']) ?></h1>
                         <div class="flex items-center text-sm text-gray-600 space-x-3">
                             <span>⭐ 5.0 (196)</span>
-                            <span class="text-red-500">• Closed</span>
+                            <span class="text-green-500">• Open</span>
                             <span>opens soon at 9:00am</span>
-                            <span>• MG Road, Bangalore</span>
                         </div>
                     </div>
 
@@ -53,11 +56,15 @@ $room = $result->fetch_assoc();
                 <!-- Tombol -->
                 <div>
                     <div class="flex gap-3">
-                        <button onclick="window.history.back()" class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300">Back</button>
+                        <button onclick="window.location.href='/KosPelitaHarapan/room'" class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300">
+                            Back
+                        </button>
 
-                        <button class="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700">Book now</button>
 
-
+                        <button onclick="window.location.href='/KosPelitaHarapan/roomDetail/fasilitas/<?= $room['id'] ?>'"
+                            class="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700">
+                            Book now
+                        </button>
                     </div>
                     <span class="text-sm text-gray-500">15 people recently enquired</span>
                 </div>
